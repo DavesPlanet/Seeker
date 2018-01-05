@@ -1,5 +1,5 @@
 # Seeker
-## integrated tracking of exploited children
+## Integrated tracking of exploited children
 
 ## Design Notes:
 
@@ -16,10 +16,10 @@ All Mongo records are required by the engine to have an _id field. Default gener
 Mongo does not have tables, it has collections. Because this is not a relational database you can not query across multiple collections.
 Each Mongo document has a 16 meg limit
 
-The data structure of objects in Mongo will look something like this:
+**The data structure of objects in Mongo will look something like this:**
 Database name: Seeker
 
-## Collection:Site - information about each site on the internet that is of interest.
+**Collection:Site** - information about each site on the internet that is of interest.
 * domainName
 *	notes
 *	lastSearched
@@ -32,7 +32,7 @@ Database name: Seeker
 *	loginUrl
 *	throttleSpeed - default = 10s, if we wish to limit how fast we crawl, actual throttle will be (t / 2) + rnd(t) for a random throttle centered at t
 
-## Collection:Link - links to all pages and content within a site
+**Collection:Link** - links to all pages and content within a site
 *	siteId	- the _id from Site
 *	url
 *	type (page, file type)
@@ -40,47 +40,48 @@ Database name: Seeker
 *	searchFrequency
 *	referer - which page sent us here
 
-## Collection:Image
+**Collection:Image**
 *	linkId - the _id from Link, if that is where the image came from
 *	userId - the _id of a user if the image was manually uploaded
 *	image
 
-## Collection:Artifact
+**Collection:Artifact**
 * imageId - the id of the image this was parsed from
 * image - the fragement from the original image representing the artifact
 * type - the type of the artifact, such as Face, Ear, Eye, Tattoo, bellybutton, bicycle, whatever
 * similarArtifacts - an array of _id from Artifact that have been identified as similar. This array will also contain information about who made the link, when it was made, and how highly scored the link is.
 
-## Collection:Profile
+**Collection:Profile**
 *	images - array of _id from Image related to this profile
 * artifacts - array of _id from Artifact related to this profile
 * notations - array of notes from users and automated processes
 	
-Applications
+**Applications**
 The following applications are needed
 
-## SimilarImage - used to locate duplicates. There is an existing project that does this.
+**SimilarImage** - used to locate duplicates. There is an existing project that does this.
 
-## Web Crawler
-Responsible for reading and writing to the Site, Link, and Image document collections as it crawls the internet for data about exploited children. The crawler will stay within the list of Sites that have been identified as appropriate targets. Crawler will add to the list of Sites as it discovers outbound links but those links will be validated and configured before letting Crawler lose on them. The manual oversite of Crawler is to prevent it from crawling and downloading from sites unrelated to our mission. Once a site is identified and setup Crawler will continue to come back to it on a scheduled basis looking for additional information.
+**Web Crawler**
+Responsible for reading and writing to the Site, Link, and Image document collections as it crawls the internet for data about exploited children. The crawler will stay within the list of Sites that have been identified as appropriate targets. Crawler will add to the list of Sites as it discovers outbound links but those links will be validated and configured before letting Crawler lose on them. The manual oversite of Crawler is to prevent it from crawling and downloading from sites unrelated to our mission or from downloading duplicate content or failing to keep similar content properly grouped. Once a site is identified and setup Crawler will continue to come back to it on a scheduled basis looking for additional information.
 
-## Image Recognition
+**Image Recognition**
 Image recognition will look through the raw images saved by Crawler in the Image collection and will parse out all manner of useful objects into smaller image fragements. Using deep learning convolutional neural networks it will parse out faces, eyes, ears, birthmarks, tattoos, and a great variety of identifiable artifacts such as pictures, artwork, jewelery, watches, neckties, clocks, eyeglasses. These image fragments will all be processed into the Artifacts collection, tagged with what type of artifact the image represents.
 
-## Face Matching
+**Face Matching**
 Face Matching will look through newly discovered Artifact items of type = FACE and will match them against all other Artifact of that type.
 
-## Ear Matching
+**Ear Matching**
 Ear Matching will look through newly discovered Artifact items of type = EAR and will match them against all other Artifact of that type.
 
-## Eye Matching
+**Eye Matching**
 Eye Matching will look through newly discovered Artifact items of type = EYE and will match them against all other Artifact of that type.
 
-## Birthmark Matching
+**Birthmark Matching**
 Birthmark Matching will look through newly discovered Artifact items of type = BIRTHMARK and will match them against all other Artifact of that type.
 
-## Tattoo Matching
+**Tattoo Matching**
 Tattoo Matching will look through newly discovered Artifact items of type = TATTOO and will match them against all other Artifact of that type.
 
-## Other Image Matching
+**Other Image Matching**
 Other Image Matching will look through newly discovered Artifact items that do not have special purpose matchers and will match them against all other Artifact items of the same type.
+
