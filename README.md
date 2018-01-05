@@ -19,7 +19,7 @@ Each Mongo document has a 16 meg limit
 The data structure of objects in Mongo will look something like this:
 Database name: Seeker
 
-# Collection:Site - information about each site on the internet that is of interest.
+## Collection:Site - information about each site on the internet that is of interest.
 * domainName
 *	notes
 *	lastSearched
