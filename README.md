@@ -43,7 +43,9 @@ Database name: Seeker
 **Collection:Image**
 *	linkId - the _id from Link, if that is where the image came from
 *	userId - the _id of a user if the image was manually uploaded
+*	pHash - perspective hash, most accurate method to identify duplicate images
 *	image
+*	similarHashes - json list of _id from Image of similar hashes
 
 **Collection:Artifact**
 * imageId - the id of the image this was parsed from
@@ -59,10 +61,11 @@ Database name: Seeker
 **Applications**
 The following applications are needed
 
-**SimilarImage** - used to locate duplicates. There is an existing project that does this.
-
 **Web Crawler**
 Responsible for reading and writing to the Site, Link, and Image document collections as it crawls the internet for data about exploited children. The crawler will stay within the list of Sites that have been identified as appropriate targets. Crawler will add to the list of Sites as it discovers outbound links but those links will be validated and configured before letting Crawler lose on them. The manual oversite of Crawler is to prevent it from crawling and downloading from sites unrelated to our mission or from downloading duplicate content or failing to keep similar content properly grouped. Once a site is identified and setup Crawler will continue to come back to it on a scheduled basis looking for additional information.
+
+**Similar Image**
+Similar Image will calculate the pHash, or perspective hash, of each image in order to track other occurances of this same image. It will also create a list of all existing pHash which differ by less than the threshold amount, adding the _id of each matching Image to the others "similarHashes" collection.
 
 **Image Recognition**
 Image recognition will look through the raw images saved by Crawler in the Image collection and will parse out all manner of useful objects into smaller image fragements. Using deep learning convolutional neural networks it will parse out faces, eyes, ears, birthmarks, tattoos, and a great variety of identifiable artifacts such as pictures, artwork, jewelery, watches, neckties, clocks, eyeglasses. These image fragments will all be processed into the Artifacts collection, tagged with what type of artifact the image represents.
